@@ -1,0 +1,49 @@
+name: Validate TasksAI Wrapper
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate manifest and runtime contract
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const manifest = JSON.parse(fs.readFileSync("agent-install.json", "utf8"));
+          const vertical = JSON.parse(fs.readFileSync("vertical.json", "utf8"));
+          const problems = [];
+          if (manifest.schema_version !== "1.0") problems.push("schema_version must be 1.0");
+          if (manifest.product_id !== vertical.product_id) problems.push("product_id mismatch");
+          if (manifest.official_package !== "@tasksai/install") problems.push("official_package must be @tasksai/install");
+          if (!vertical.website_url?.includes(manifest.official_domain)) problems.push("official_domain must match vertical.website_url");
+          if (manifest.installer?.preferred !== "npm_exec") problems.push("installer.preferred must be npm_exec");
+          const validate = (entry, label, suffix = "") => {
+            const args = entry?.args || [];
+            const call = args[args.indexOf("--call") + 1] || "";
+            const expected = `tasksai-install ${manifest.product_id}${suffix ? ` ${suffix}` : ""}`;
+            if (entry?.command !== "npm") problems.push(`${label} command must be npm`);
+            if (!args.includes("exec")) problems.push(`${label} must include exec`);
+            if (!args.includes("--package=@tasksai/install")) problems.push(`${label} must include --package=@tasksai/install`);
+            if (!call.startsWith(expected)) problems.push(`${label} --call must start with ${expected}`);
+          };
+          validate(manifest.installer?.npm_exec, "installer.npm_exec");
+          validate(manifest.health_check, "health_check", "doctor");
+          validate(manifest.uninstall, "uninstall", "uninstall");
+          const sharedRuntime = manifest.runtime?.source === "shared_installer";
+          if (!sharedRuntime && (!fs.existsSync("server.py") || !fs.existsSync("requirements.txt"))) {
+            problems.push("missing runtime files without runtime.source=shared_installer");
+          }
+          if (problems.length) {
+            console.error(problems.map((p) => `- ${p}`).join("\n"));
+            process.exit(1);
+          }
+          console.log(`${manifest.product_name} wrapper manifest is valid.`);
+          NODE

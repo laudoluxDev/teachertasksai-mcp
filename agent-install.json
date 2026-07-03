@@ -17,8 +17,7 @@
       ],
       "requires": [
         "node",
-        "npm",
-        "npx"
+        "npm"
       ]
     }
   },
@@ -60,5 +59,9 @@
   "support": {
     "url": "https://teachertasksai.com/support",
     "email": "support@teachertasksai.com"
+  },
+  "runtime": {
+    "source": "shared_installer",
+    "notes": "The wrapper repo provides product metadata; @tasksai/install supplies the shared MCP runtime."
   }
 }
