@@ -6,14 +6,14 @@
   "official_github_repo": "https://github.com/laudoluxDev/teachertasksai-mcp",
   "official_package": "@tasksai/install",
   "installer": {
-    "preferred": "npx",
-    "npx": {
-      "command": "npx",
+    "preferred": "npm_exec",
+    "npm_exec": {
+      "command": "npm",
       "args": [
-        "@tasksai/install",
-        "teacher",
-        "--source",
-        "https://github.com/laudoluxDev/teachertasksai-mcp"
+        "exec",
+        "--package=@tasksai/install",
+        "--call",
+        "tasksai-install teacher --source https://github.com/laudoluxDev/teachertasksai-mcp"
       ],
       "requires": [
         "node",
@@ -40,19 +40,21 @@
     "native_installer_user_approval_required": true
   },
   "health_check": {
-    "command": "npx",
+    "command": "npm",
     "args": [
-      "@tasksai/install",
-      "teacher",
-      "doctor"
+      "exec",
+      "--package=@tasksai/install",
+      "--call",
+      "tasksai-install teacher doctor"
     ]
   },
   "uninstall": {
-    "command": "npx",
+    "command": "npm",
     "args": [
-      "@tasksai/install",
-      "teacher",
-      "uninstall"
+      "exec",
+      "--package=@tasksai/install",
+      "--call",
+      "tasksai-install teacher uninstall"
     ]
   },
   "support": {
