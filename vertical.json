@@ -6,6 +6,6 @@
   "website_url": "https://teachertasksai.com",
   "billing_url": "https://teachertasksai.com/buy-credits.html",
   "support_email": "support@teachertasksai.com",
-  "privacy_summary": "TeacherTasksAI servers handle authentication, credits, catalog/search metadata, and licensed skill delivery. TeacherTasksAI does not process the user's task content. The user's chosen AI assistant or LLM performs the task work according to that provider's privacy terms.",
+  "privacy_summary": "TeacherTasksAI servers handle authentication, credits, catalog/search metadata, and licensed skill delivery. TeacherTasksAI does not process the user's task content or generated output files. The user's chosen AI assistant or LLM performs the task work according to that provider's privacy terms, and saved files are created locally by the MCP runtime.",
   "first_prompt": "Check my TeacherTasksAI credit balance."
 }
